@@ -479,20 +479,14 @@ for r in range(6):
         lb.add_flag(lv.obj.FLAG.CLICKABLE)
         cells.append([lb, 0])
 
-# --- รายละเอียด + คำอธิบาย ---
-detail_lbl = F(lv.label(scr))
-detail_lbl.set_size(312, 36)
-detail_lbl.set_pos(4, 186)
-detail_lbl.set_style_text_color(C_DETAIL, 0)
-detail_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
-
-legend_lbl = F(lv.label(scr))
-legend_lbl.set_size(312, 15)
-legend_lbl.set_pos(4, 223)
-legend_lbl.set_text("* = วันพระ (ขึ้น/แรม 8,15 ค่ำ)" if USE_THAI
-                    else "* = Wan Phra (K8/K15/R8/R15) | tap day")
-legend_lbl.set_style_text_color(C_DIM, 0)
-legend_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+# --- รายละเอียด + คำอธิบาย (label เดียว 3 บรรทัด: 2 บรรทัด detail + 1 บรรทัด legend) ---
+LEGEND_TXT = ("* = วันพระ (ขึ้น/แรม 8,15 ค่ำ)" if USE_THAI
+              else "* = Wan Phra (K8/K15/R8/R15) | tap day")
+info_lbl = F(lv.label(scr))
+info_lbl.set_size(312, 52)
+info_lbl.set_pos(4, 186)
+info_lbl.set_style_text_color(C_DETAIL, 0)
+info_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
 
 def show_detail(y, m, d):
     if USE_THAI:
@@ -503,7 +497,7 @@ def show_detail(y, m, d):
         nm = TL.holy_name_th(phase, khaat, lm, ex, idx)
         if nm:
             line2 += " " + nm
-        detail_lbl.set_text(line1 + "\n" + line2)
+        info_lbl.set_text(line1 + "\n" + line2 + "\n" + LEGEND_TXT)
         print(line1 + " " + line2)
     else:
         # fallback ฟอนต์ LVGL  built-in ไม่มีไทย -> ใช้ ASCII ล้วน (อ่านได้ ไม่เป็นกล่อง)
@@ -514,7 +508,7 @@ def show_detail(y, m, d):
             s += " *PHRA*"
             if name:
                 s += " " + name
-        detail_lbl.set_text(s)
+        info_lbl.set_text(s + "\n" + LEGEND_TXT)
         print(s)
 
 def redraw():
