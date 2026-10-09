@@ -7,6 +7,7 @@ __pycache__/
 # secrets เครื่องจริง ห้ามขึ้น GitHub
 config.py
 
-# ไฟล์ใหญ่ / build
+# ไฟล์ใหญ่ / build (กัน bin รั่ว ยกเว้นฟอนต์ + เฟิร์มแวร์ที่ตั้งใจเก็บ)
 *.bin
 !thai15.bin
+!firmware/*.bin
