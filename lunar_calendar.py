@@ -36,6 +36,8 @@ TIME_PORT = 57862
 TIME_PATH = "/unixtime.php"
 TZ_HOURS = 7                 # โซนเวลาไทย (+7)
 THEME = 0                    # ธีมสี: 0 ดำ / 1 น้ำเงินเข้ม / 2 ขาว
+                             #   3 ชมพูนีออน / 4 ส้มซันเซต / 5 เขียวมิ้นต์
+                             #   6 ม่วงสด / 7 ฟ้าสด / 8 แดงสตรอว์เบอร์รี / 9 เหลืองเลมอน
 # ==============================================================
 try:
     import config as _cfg
@@ -348,6 +350,7 @@ WD_TH = ("อา", "จ", "อ", "พ", "พฤ", "ศ", "ส")
 WD_FULL_TH = ("จันทร์", "อังคาร", "พุธ", "พฤหัสบดี", "ศุกร์", "เสาร์", "อาทิตย์")
 
 # ---------- ธีมสี (เลือกด้วย THEME บนสุดของไฟล์) ----------
+# 0-2 โทนเดิม (อ่านง่าย) / 3-9 โทนสดใส vivid (พื้นเข้ม-ช่องสีสด-ขอบนีออน)
 _THEMES = (
     {"bg": 0x000000, "cell": 0x222222, "dim": 0x555555, "phra": 0xFFD800,
      "today": 0x00FFFF, "sel": 0x00FF00, "sun": 0xFF6060,
@@ -358,6 +361,34 @@ _THEMES = (
     {"bg": 0xFFFFFF, "cell": 0xE8E8E8, "dim": 0x999999, "phra": 0xFFB300,
      "today": 0x0080FF, "sel": 0x00A000, "sun": 0xFF0000,
      "white": 0x000000, "black": 0xFFFFFF, "detail": 0x7A5C00, "sub": 0x0066CC},
+    # 3 ชมพูนีออน: ดำอมชมพู + ช่องชมพูเข้ม + เหลือง/ฟ้า/เขียวนีออน
+    {"bg": 0x0F0008, "cell": 0x4A0E2E, "dim": 0xA06080, "phra": 0xFFD600,
+     "today": 0x00E5FF, "sel": 0x76FF03, "sun": 0xFF5252,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0xFF80AB, "sub": 0xF48FB1},
+    # 4 ส้มซันเซต: น้ำตาลส้ม + เหลืองทองสด
+    {"bg": 0x1A0E00, "cell": 0x5D2C00, "dim": 0xC09060, "phra": 0xFFEA00,
+     "today": 0x00E5FF, "sel": 0x76FF03, "sun": 0xFF5252,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0xFFB74D, "sub": 0xFFD54F},
+    # 5 เขียวมิ้นต์: เขียวเข้ม + ม-end มิ้นต์นีออน
+    {"bg": 0x00201A, "cell": 0x004D40, "dim": 0x70A090, "phra": 0xFFEA00,
+     "today": 0x00E5FF, "sel": 0xC6FF00, "sun": 0xFF8A80,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0x69F0AE, "sub": 0x80CBC4},
+    # 6 ม่วงสด: ม่วงเข้ม + ม่วงไฟฟ้า + ฟ้านีออน
+    {"bg": 0x12002E, "cell": 0x4527A0, "dim": 0x9A8AC0, "phra": 0xFFEA00,
+     "today": 0x00E5FF, "sel": 0x76FF03, "sun": 0xFF8A80,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0xCE93D8, "sub": 0x90CAF9},
+    # 7 ฟ้าสดโอเชี่ยน: น้ำเงินเข้ม + ฟ้าสดใส
+    {"bg": 0x002233, "cell": 0x0277BD, "dim": 0x7AA8C0, "phra": 0xFFEA00,
+     "today": 0x00FFEA, "sel": 0xC6FF00, "sun": 0xFF8A80,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0x80D8FF, "sub": 0x84FFFF},
+    # 8 แดงสตรอว์เบอร์รี: แดงเข้ม + เหลืองตัด (วันอาทิตย์ใช้เหลืองกันกลืนกับพื้นแดง)
+    {"bg": 0x220000, "cell": 0xB71C1C, "dim": 0xC08080, "phra": 0xFFEA00,
+     "today": 0x00E5FF, "sel": 0x76FF03, "sun": 0xFFEB3B,
+     "white": 0xFFFFFF, "black": 0x000000, "detail": 0xFFAB91, "sub": 0xFFCC80},
+    # 9 เหลืองเลมอน (ธีมสว่างสดใส): พื้นครีม + ช่องเหลืองสด + ตัวหนังสือเข้ม
+    {"bg": 0xFFFDE7, "cell": 0xFFEB3B, "dim": 0xA0A0A0, "phra": 0xFF6D00,
+     "today": 0x00B0FF, "sel": 0x00C853, "sun": 0xE53935,
+     "white": 0x212121, "black": 0x000000, "detail": 0xE65100, "sub": 0x2E7D32},
 )
 _T = _THEMES[THEME] if 0 <= THEME < len(_THEMES) else _THEMES[0]
 C_BG = lv.color_hex(_T["bg"])

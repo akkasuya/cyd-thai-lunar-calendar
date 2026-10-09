@@ -1,3 +1,12 @@
+# MicroPython / CYD
 __pycache__/
 *.pyc
+.mpio/
+.vscode/
+
+# secrets เครื่องจริง ห้ามขึ้น GitHub
 config.py
+
+# ไฟล์ใหญ่ / build
+*.bin
+!thai15.bin
