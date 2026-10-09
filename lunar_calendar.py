@@ -652,8 +652,6 @@ def apply_theme(idx):
     btn_tnext.set_style_bg_color(C_CELL, 0)
     tprev_txt.set_style_text_color(C_WHITE, 0)
     tnext_txt.set_style_text_color(C_WHITE, 0)
-    theme_lbl.set_style_text_color(C_WHITE, 0)
-    theme_lbl.set_text(theme_label())
     try:  # จำธีมไว้บนบอร์ด
         with open("theme.cfg", "w") as _f:
             _f.write(str(THEME))
@@ -664,23 +662,16 @@ def apply_theme(idx):
 
 btn_tprev = lv.button(scr)
 btn_tprev.set_size(34, 20)
-btn_tprev.set_pos(4, 216)
+btn_tprev.set_pos(124, 216)
 btn_tprev.set_style_bg_color(C_CELL, 0)
 tprev_txt = F(lv.label(btn_tprev))
 tprev_txt.set_text("<")
 tprev_txt.set_style_text_color(C_WHITE, 0)
 tprev_txt.center()
 
-theme_lbl = F(lv.label(scr))
-theme_lbl.set_size(236, 20)
-theme_lbl.set_pos(40, 216)
-theme_lbl.set_style_text_color(C_WHITE, 0)
-theme_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
-theme_lbl.set_text(theme_label())
-
 btn_tnext = lv.button(scr)
 btn_tnext.set_size(34, 20)
-btn_tnext.set_pos(282, 216)
+btn_tnext.set_pos(162, 216)
 btn_tnext.set_style_bg_color(C_CELL, 0)
 tnext_txt = F(lv.label(btn_tnext))
 tnext_txt.set_text(">")
