@@ -14,7 +14,7 @@
 #
 # วิธีรันบน CYD: อัปโหลด thai_lunar.py + lunar_calendar.py + NotoSansThai-Bold.ttf
 #   แล้ว `import lunar_calendar`
-# วันพระ = ขึ้น/แรม 8 ค่ำ และ 15 ค่ำ (เดือนละ 4 วัน) ตาม thai_lunar.php
+# วันพระ = ขึ้น/แรม 8, 15 ค่ำ + แรม 14 ค่ำของเดือนขาด (ไม่มีแรม 15) ตาม thai_lunar.php
 
 from micropython import const
 import lvgl as lv
@@ -488,8 +488,8 @@ for r in range(6):
         cells.append([lb, 0])
 
 # --- รายละเอียด + คำอธิบาย (label เดียว 3 บรรทัด: 2 บรรทัด detail + 1 บรรทัด legend) ---
-LEGEND_TXT = ("* = วันพระ (ขึ้น/แรม 8,15 ค่ำ)" if USE_THAI
-              else "* = Wan Phra (K8/K15/R8/R15) | tap day")
+LEGEND_TXT = ("* = วันพระ (ขึ้น/แรม 8,15 ค่ำ/แรม 14 เดือนขาด)" if USE_THAI
+              else "* = Wan Phra (K8/K15/R8/R15/R14*) | tap day")
 info_lbl = F(lv.label(scr))
 info_lbl.set_size(312, 50)
 info_lbl.set_pos(4, 164)
