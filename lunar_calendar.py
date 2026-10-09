@@ -391,6 +391,12 @@ _THEMES = (
      "white": 0x212121, "black": 0x000000, "detail": 0xE65100, "sub": 0x2E7D32},
 )
 _T = _THEMES[THEME] if 0 <= THEME < len(_THEMES) else _THEMES[0]
+try:  # จำธีมที่เลือกล่าสุดข้ามรีบูต (ไฟล์บนบอร์ด, ไม่มีก็ใช้ค่า THEME)
+    with open("theme.cfg") as _f:
+        THEME = int(_f.read().strip()) % len(_THEMES)
+        _T = _THEMES[THEME]
+except Exception:
+    pass
 C_BG = lv.color_hex(_T["bg"])
 C_CELL = lv.color_hex(_T["cell"])
 C_DIM = lv.color_hex(_T["dim"])
@@ -402,7 +408,7 @@ C_WHITE = lv.color_hex(_T["white"])   # สีตัวหนังสือห�
 C_BLACK = lv.color_hex(_T["black"])   # สีตัวหนังสือบนพื้นวันพระ
 C_DETAIL = lv.color_hex(_T["detail"])
 C_SUB = lv.color_hex(_T["sub"])
-del _THEMES, _T
+del _T  # เก็บ _THEMES ไว้ให้ apply_theme() สลับธีมตอนรัน
 
 def now_ymd():
     t = time.localtime()
@@ -452,6 +458,7 @@ title_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
 
 # --- แถววันในสัปดาห์ (ไทยเมื่อมีฟอนต์ ไม่งั้นอังกฤษ ไม่โชว์กล่อง) ---
 WD = WD_TH if USE_THAI else WD_EN
+WD_LBLS = []
 for c in range(7):
     w = F(lv.label(scr))
     w.set_size(44, 14)
@@ -459,10 +466,11 @@ for c in range(7):
     w.set_text(WD[c])
     w.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
     w.set_style_text_color(C_SUN if c == 0 else C_WHITE, 0)
+    WD_LBLS.append(w)
 
 # --- ตารางวัน 7x6 (สร้างครั้งเดียว reuse) ---
 # ใช้ label + CLICKABLE แทน button (เบากว่าครึ่ง: ไม่ต้องมี label ลูกอีกชั้น)
-GX0, GY0, CW, CH = 6, 48, 44, 20
+GX0, GY0, CW, CH = 6, 48, 44, 19  # CH 19: เว้นที่ล่างจอให้ info (3 บรรทัด) + แถวเลือกธีม
 cells = []  # (lbl, day|0)
 for r in range(6):
     for c in range(7):
@@ -483,8 +491,8 @@ for r in range(6):
 LEGEND_TXT = ("* = วันพระ (ขึ้น/แรม 8,15 ค่ำ)" if USE_THAI
               else "* = Wan Phra (K8/K15/R8/R15) | tap day")
 info_lbl = F(lv.label(scr))
-info_lbl.set_size(312, 52)
-info_lbl.set_pos(4, 186)
+info_lbl.set_size(312, 50)
+info_lbl.set_pos(4, 164)
 info_lbl.set_style_text_color(C_DETAIL, 0)
 info_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
 
@@ -608,6 +616,85 @@ def on_today(e):
 btn_prev.add_event_cb(lambda e: on_prev(e), lv.EVENT.CLICKED, None)
 btn_next.add_event_cb(lambda e: on_next(e), lv.EVENT.CLICKED, None)
 btn_today.add_event_cb(lambda e: on_today(e), lv.EVENT.CLICKED, None)
+
+# --- ตัวเลือกธีมล่างสุด: [<] [ชื่อธีม] [>] (แตะเปลี่ยนได้เลย จำค่าข้ามรีบูต) ---
+THEME_NAMES_TH = ("ดำ", "น้ำเงิน", "ขาว", "ชมพูนีออน", "ส้มซันเซต",
+                  "มิ้นต์", "ม่วงสด", "ฟ้าสด", "แดง", "เลมอน")
+THEME_NAMES_EN = ("Black", "Navy", "White", "Pink", "Orange",
+                  "Mint", "Violet", "Ocean", "Red", "Lemon")
+
+def theme_label():
+    nm = (THEME_NAMES_TH if USE_THAI else THEME_NAMES_EN)[THEME]
+    return "%d %s" % (THEME, nm)
+
+def apply_theme(idx):
+    global THEME, C_BG, C_CELL, C_DIM, C_PHRA, C_TODAY, C_SEL
+    global C_SUN, C_WHITE, C_BLACK, C_DETAIL, C_SUB
+    THEME = idx % len(_THEMES)
+    _t = _THEMES[THEME]
+    C_BG = lv.color_hex(_t["bg"])
+    C_CELL = lv.color_hex(_t["cell"])
+    C_DIM = lv.color_hex(_t["dim"])
+    C_PHRA = lv.color_hex(_t["phra"])
+    C_TODAY = lv.color_hex(_t["today"])
+    C_SEL = lv.color_hex(_t["sel"])
+    C_SUN = lv.color_hex(_t["sun"])
+    C_WHITE = lv.color_hex(_t["white"])
+    C_BLACK = lv.color_hex(_t["black"])
+    C_DETAIL = lv.color_hex(_t["detail"])
+    C_SUB = lv.color_hex(_t["sub"])
+    scr.set_style_bg_color(C_BG, 0)
+    title_lbl.set_style_text_color(C_WHITE, 0)
+    for _i, _w in enumerate(WD_LBLS):
+        _w.set_style_text_color(C_SUN if _i == 0 else C_WHITE, 0)
+    info_lbl.set_style_text_color(C_DETAIL, 0)
+    btn_tprev.set_style_bg_color(C_CELL, 0)
+    btn_tnext.set_style_bg_color(C_CELL, 0)
+    tprev_txt.set_style_text_color(C_WHITE, 0)
+    tnext_txt.set_style_text_color(C_WHITE, 0)
+    theme_lbl.set_style_text_color(C_WHITE, 0)
+    theme_lbl.set_text(theme_label())
+    try:  # จำธีมไว้บนบอร์ด
+        with open("theme.cfg", "w") as _f:
+            _f.write(str(THEME))
+    except Exception:
+        pass
+    print("theme ->", theme_label())
+    redraw()
+
+btn_tprev = lv.button(scr)
+btn_tprev.set_size(34, 20)
+btn_tprev.set_pos(4, 216)
+btn_tprev.set_style_bg_color(C_CELL, 0)
+tprev_txt = F(lv.label(btn_tprev))
+tprev_txt.set_text("<")
+tprev_txt.set_style_text_color(C_WHITE, 0)
+tprev_txt.center()
+
+theme_lbl = F(lv.label(scr))
+theme_lbl.set_size(236, 20)
+theme_lbl.set_pos(40, 216)
+theme_lbl.set_style_text_color(C_WHITE, 0)
+theme_lbl.set_style_text_align(lv.TEXT_ALIGN.CENTER, 0)
+theme_lbl.set_text(theme_label())
+
+btn_tnext = lv.button(scr)
+btn_tnext.set_size(34, 20)
+btn_tnext.set_pos(282, 216)
+btn_tnext.set_style_bg_color(C_CELL, 0)
+tnext_txt = F(lv.label(btn_tnext))
+tnext_txt.set_text(">")
+tnext_txt.set_style_text_color(C_WHITE, 0)
+tnext_txt.center()
+
+def on_tprev(e):
+    apply_theme(THEME - 1)
+
+def on_tnext(e):
+    apply_theme(THEME + 1)
+
+btn_tprev.add_event_cb(lambda e: on_tprev(e), lv.EVENT.CLICKED, None)
+btn_tnext.add_event_cb(lambda e: on_tnext(e), lv.EVENT.CLICKED, None)
 
 def update_title():
     # ชื่อเดือนที่กำลังดู + เวลาปัจจุบัน (เช่น "ตุลาคม 2569  08:35")
